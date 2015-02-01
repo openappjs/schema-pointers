@@ -1,0 +1,33 @@
+{
+  "name": "schema-pointers",
+  "version": "0.0.0",
+  "description": "parse json-schema into pointer references",
+  "main": "index.js",
+  "scripts": {
+    "test": "tape test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/openappjs/schema-pointers"
+  },
+  "keywords": [
+    "schema",
+    "json-schema",
+    "json-pointer",
+    "cache"
+  ],
+  "author": "ahdinosaur",
+  "license": "AGPLv3",
+  "bugs": {
+    "url": "https://github.com/openappjs/schema-pointers/issues"
+  },
+  "homepage": "https://github.com/openappjs/schema-pointers",
+  "devDependencies": {
+    "debug": "^2.1.1",
+    "tape": "^3.5.0"
+  },
+  "dependencies": {
+    "json-pointer": "^0.2.2",
+    "traverse": "^0.6.6"
+  }
+}
