@@ -4,7 +4,8 @@ var debug = require('debug')("schema-refs");
 module.exports = function toRefs (schema) {
   debug("toRefs(", schema, ")");
 
-  var baseUrl = normalizeUri((schema.id || "").replace(/#.*/, ''));
+  var id = schema.id || "";
+  var baseUrl = normalizeUri(id.replace(/#.*/, ''));
 
   var ptrs = {};
 
@@ -26,12 +27,18 @@ module.exports = function toRefs (schema) {
 };
 
 function normalizeUri (uri) {
+  debug("normalizeUri(", uri, ")");
+
   // if has pound
-  if (uri.match('#')) {
-    return uri;
-  } else {
-    return uri + "#";
-  }
+  var ret = uri.match(/\#$/g) ?
+    // then return uri as is
+    uri :
+    // else add pound to end of uri
+    uri + "#"
+  ;
+
+  debug("normalizeUri()", ret);
+  return ret;
 }
 
 function toDataPath (schemaPath) {
