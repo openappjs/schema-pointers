@@ -8,7 +8,7 @@ test("require module", function (t) {
   t.end();
 });
 
-test("simple schema", function (t) {
+test("schema with property", function (t) {
   var schema = {
     id: "Person",
     properties: {
@@ -21,6 +21,23 @@ test("simple schema", function (t) {
   t.deepEqual(pointes, {
     "/": "Person#",
     "/name": "Person#/properties/name",
+  });
+  t.end();
+});
+
+test("schema with ref", function (t) {
+  var schema = {
+    id: "Person",
+    properties: {
+      friend: {
+        '$ref': "Person",
+      },
+    },
+  };
+  var pointes = toPointers(schema);
+  t.deepEqual(pointes, {
+    "/": "Person#",
+    "/friend": "Person#",
   });
   t.end();
 });
