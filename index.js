@@ -2,25 +2,27 @@ var traverse = require('traverse');
 var debug = require('debug')("schema-refs");
 
 module.exports = function toRefs (schema) {
+  debug("toRefs(", schema, ")");
 
   var baseUrl = normalizeUri((schema.id || "").replace(/#.*/, ''));
 
-  var refs = {};
+  var ptrs = {};
 
   traverse(schema).forEach(function (node) {
     if (this.isRoot) {
-      refs["/"] = normalizeUri(this.node.id);
+      ptrs["/"] = normalizeUri(this.node.id);
     } else if (this.node['$ref']) {
-      var jsonPointer = toPointer(toJsonPath(this.path));
-      refs[jsonPointer] = normalizeUri(this.node['$ref']);
+      var dataPointer = toPointer(toDataPath(this.path));
+      ptrs[dataPointer] = normalizeUri(this.node['$ref']);
     } else if (this.path[this.path.length - 2] === "properties") {
-      var jsonPointer = toPointer(toJsonPath(this.path));
-      var schemaPointer = toPointer(this.path)
-      refs[jsonPointer] = baseUrl + schemaPointer;
+      var dataPointer = toPointer(toDataPath(this.path));
+      var schemaPointer = toPointer(this.path);
+      ptrs[dataPointer] = baseUrl + schemaPointer;
     }
   });
 
-  return refs;
+  debug("toRefs() ->", ptrs);
+  return ptrs;
 };
 
 function normalizeUri (uri) {
@@ -32,23 +34,23 @@ function normalizeUri (uri) {
   }
 }
 
-function toJsonPath (schemaPath) {
-  debug("toJsonPath(", schemaPath, ")");
+function toDataPath (schemaPath) {
+  debug("toDataPath(", schemaPath, ")");
 
   var ret = schemaPath.filter(function (key) {
     return key !== 'properties';
   });
 
-  debug("toJsonPath() ->", ret);
+  debug("toDataPath() ->", ret);
   return ret;
 }
 
-var jsonPointerLib = require('json-pointer');
+var jsonPointer = require('json-pointer');
 
 function toPointer (path) {
   debug("toPointer(", path, ")");
 
-  var ret = jsonPointerLib.compile(path);
+  var ret = jsonPointer.compile(path);
 
   debug("toPointer() ->", ret);
   return ret
